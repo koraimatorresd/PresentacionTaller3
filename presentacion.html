@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ACM · Presentación · 10 min</title>
+<style>
+  :root{
+    --bg:#F8FAFC; --card:#FFFFFF; --primary:#1E3A8A; --primary-soft:#EEF2FF;
+    --accent:#D97706; --accent-soft:#FEF3C7; --success:#059669; --success-soft:#ECFDF5;
+    --text:#1E293B; --muted:#64748B; --line:#E2E8F0;
+    --shadow:0 10px 30px rgba(30,58,138,.07);
+    --shadow-hover:0 18px 40px rgba(30,58,138,.12);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{font-family:"Inter","Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;
+    background:var(--bg);color:var(--text);overflow:hidden;-webkit-font-smoothing:antialiased}
+  .deck{position:relative;height:100vh;width:100vw}
+  .slide{position:absolute;inset:0;display:none;flex-direction:column;
+    padding:clamp(22px,3.4vh,44px) clamp(26px,4.4vw,72px) clamp(60px,8vh,88px);
+    overflow-y:auto;overflow-x:hidden;background:var(--bg)}
+  .slide.active{display:flex;animation:fade .32s cubic-bezier(.32,.72,0,1) both}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+  .eyebrow{display:inline-flex;align-items:center;gap:8px;
+    font-size:clamp(10px,.82vw,12px);letter-spacing:.16em;text-transform:uppercase;
+    font-weight:700;color:var(--primary);margin-bottom:8px}
+  .eyebrow::before{content:"";width:26px;height:2px;background:var(--primary);display:block}
+  h2{font-size:clamp(21px,2.5vw,34px);font-weight:800;
+    letter-spacing:-.025em;line-height:1.12;color:var(--primary);max-width:1050px}
+  .subhead{font-size:clamp(12px,1.02vw,15px);color:var(--muted);
+    margin-top:8px;max-width:1000px;line-height:1.5}
+  .rule{height:3px;width:56px;background:var(--accent);border-radius:2px;margin:12px 0 clamp(12px,1.9vh,20px)}
+
+  .slide.title{background:radial-gradient(1200px 700px at 78% 10%,#2C4CA8 0%,#1E3A8A 42%,#0F1E4A 100%);
+    color:#fff;justify-content:center;padding-left:clamp(36px,7.5vw,120px);padding-right:clamp(36px,7.5vw,120px)}
+  .slide.title::after{content:"";position:absolute;inset:0;pointer-events:none;
+    background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);
+    background-size:68px 68px;
+    -webkit-mask-image:radial-gradient(circle at 74% 26%,#000 0%,transparent 72%);
+            mask-image:radial-gradient(circle at 74% 26%,#000 0%,transparent 72%)}
+  .title-tag{display:inline-block;font-size:clamp(10px,.82vw,12px);
+    letter-spacing:.22em;text-transform:uppercase;font-weight:700;
+    color:#A5B4FC;border:1px solid rgba(165,180,252,.42);
+    padding:7px 15px;border-radius:999px;margin-bottom:22px;position:relative;z-index:1}
+  .slide.title h1{font-size:clamp(28px,4.2vw,58px);line-height:1.06;font-weight:800;
+    letter-spacing:-.03em;max-width:17ch;position:relative;z-index:1}
+  .slide.title h1 span{color:#FCD34D}
+  .title-sub{margin-top:20px;font-size:clamp(13px,1.3vw,19px);color:#CBD5E1;
+    max-width:64ch;line-height:1.5;position:relative;z-index:1;font-weight:400}
+  .title-authors{margin-top:clamp(28px,4.6vh,50px);font-size:clamp(11px,.92vw,14px);
+    color:#94A3B8;position:relative;z-index:1;line-height:1.7}
+  .title-meta{margin-top:14px;display:flex;flex-wrap:wrap;gap:10px 28px;
+    font-size:clamp(11px,.92vw,14px);color:#94A3B8;position:relative;z-index:1}
+  .title-meta b{color:#E2E8F0;font-weight:600}
+
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:clamp(14px,1.6vw,24px)}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(12px,1.4vw,20px)}
+  .grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(10px,1.2vw,18px)}
+  .stack{display:flex;flex-direction:column;gap:clamp(10px,1.4vh,18px)}
+  .split{display:grid;grid-template-columns:1.45fr 1fr;gap:clamp(14px,1.6vw,24px);align-items:start}
+  .split-rev{display:grid;grid-template-columns:1fr 1.45fr;gap:clamp(14px,1.6vw,24px);align-items:start}
+
+  .card{background:var(--card);border:1px solid var(--line);
+    border-radius:14px;padding:clamp(13px,1.4vw,20px);box-shadow:var(--shadow)}
+  .card h3{font-size:clamp(12px,1.02vw,15px);font-weight:800;
+    color:var(--primary);margin-bottom:8px;letter-spacing:-.01em}
+  .card p,.card li{font-size:clamp(11px,.92vw,13.5px);line-height:1.55;color:#334155}
+  .card ul{padding-left:16px;display:flex;flex-direction:column;gap:5px}
+  .card.accent{border-left:4px solid var(--primary)}
+  .card.warn{border-left:4px solid var(--accent)}
+  .card.success{border-left:4px solid var(--success)}
+
+  .kpi{background:var(--card);border:1px solid var(--line);
+    border-radius:14px;padding:clamp(12px,1.4vw,20px);box-shadow:var(--shadow);
+    display:flex;flex-direction:column;justify-content:center;gap:4px}
+  .kpi .v{font-size:clamp(20px,2.4vw,32px);font-weight:800;color:var(--primary);letter-spacing:-.025em;line-height:1.05}
+  .kpi .v.accent{color:var(--accent)}
+  .kpi .v.success{color:var(--success)}
+  .kpi .l{font-size:clamp(10px,.8vw,12px);color:var(--muted);line-height:1.35;font-weight:600}
+
+  .bullets{display:flex;flex-direction:column;gap:clamp(8px,1.1vh,14px)}
+  .bullet{display:flex;gap:11px;align-items:flex-start;
+    background:var(--card);border:1px solid var(--line);
+    border-radius:11px;padding:clamp(9px,1vw,14px);box-shadow:var(--shadow)}
+  .bullet-dot{flex:0 0 auto;width:22px;height:22px;border-radius:7px;
+    background:var(--primary);color:#fff;display:grid;place-items:center;
+    font-weight:800;font-size:11px;margin-top:1px}
+  .bullet-dot.accent{background:var(--accent)}
+  .bullet-dot.success{background:var(--success)}
+  .bullet p{font-size:clamp(11px,.92vw,13.5px);line-height:1.5;color:#334155}
+  .bullet p b{color:var(--primary)}
+
+  .table-wrap{background:var(--card);border:1px solid var(--line);
+    border-radius:14px;box-shadow:var(--shadow);padding:clamp(6px,.7vw,12px);overflow:auto}
+  table{width:100%;border-collapse:collapse;font-size:clamp(10px,.84vw,12.5px);font-variant-numeric:tabular-nums}
+  caption{caption-side:top;text-align:left;font-size:clamp(10.5px,.88vw,12.5px);font-weight:700;color:var(--primary);padding:6px 8px 10px}
+  th,td{padding:clamp(3.5px,.48vw,7px) clamp(4px,.58vw,9px);text-align:center;border-bottom:1px solid #F1F5F9;vertical-align:top}
+  th{background:var(--primary);color:#fff;font-weight:700;font-size:clamp(9.5px,.8vw,11.5px);letter-spacing:.02em}
+  th.rh{background:#172554;text-align:left}
+  tbody tr:nth-child(even){background:#F8FAFC}
+  td.rh{text-align:left;font-weight:700;color:var(--primary)}
+  tr.total td{font-weight:800;background:var(--primary-soft);color:var(--primary);border-top:2px solid #C7D2FE}
+  tr.highlight td{background:var(--success-soft);font-weight:700;color:#065F46}
+  td.dim{color:#94A3B8;font-size:clamp(9.5px,.8vw,11.5px)}
+  .tnote{font-size:clamp(9.5px,.78vw,11.5px);color:var(--muted);
+    padding:8px 6px 2px;line-height:1.5;font-style:italic}
+
+  /* ---------- FIGURAS con <img> y fallback ---------- */
+  .figure{background:var(--card);border:1px solid var(--line);
+    border-radius:14px;box-shadow:var(--shadow);padding:clamp(10px,1.2vw,16px);
+    display:flex;flex-direction:column;gap:8px}
+  .figure-label{font-size:clamp(9.5px,.78vw,11px);font-weight:700;
+    letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+  .fig-img{position:relative;min-height:clamp(220px,32vh,360px);
+    background:#F8FAFC;border:1px solid #E2E8F0;border-radius:9px;
+    display:flex;align-items:center;justify-content:center;
+    overflow:hidden;padding:8px}
+  .fig-img img{max-width:100%;max-height:100%;object-fit:contain;display:block;border-radius:6px}
+  .fig-img .fallback{display:none;text-align:center;color:var(--muted);
+    font-size:clamp(11px,.92vw,13px);padding:22px;line-height:1.6}
+  .fig-img .fallback strong{display:block;color:var(--primary);font-size:clamp(12px,1vw,14px);margin-bottom:6px}
+  .fig-img .fallback code{background:#EEF2FF;color:var(--primary);padding:2px 6px;border-radius:4px;
+    font-size:clamp(10px,.82vw,11.5px);font-family:monospace}
+  .figure-caption{font-size:clamp(10px,.82vw,12px);color:var(--muted);
+    line-height:1.45;font-style:italic}
+
+  .hl{background:linear-gradient(180deg,transparent 60%,#FEF3C7 60%);font-weight:700;color:#78350F}
+  .hl-blue{background:linear-gradient(180deg,transparent 60%,#DBEAFE 60%);font-weight:700;color:var(--primary)}
+
+  .progress{position:fixed;top:0;left:0;height:3px;
+    background:linear-gradient(90deg,var(--primary),#6366F1);z-index:50;
+    transition:width .3s ease;box-shadow:0 0 10px rgba(99,102,241,.55)}
+  .nav{position:fixed;right:clamp(14px,2vw,28px);bottom:clamp(12px,2vh,22px);
+    display:flex;align-items:center;gap:10px;z-index:60}
+  .nav button{width:40px;height:40px;border-radius:12px;border:1px solid var(--line);
+    background:#fff;color:var(--primary);font-size:16px;cursor:pointer;
+    display:grid;place-items:center;box-shadow:var(--shadow);transition:.18s}
+  .nav button:hover:not(:disabled){background:var(--primary);color:#fff;transform:translateY(-2px);box-shadow:var(--shadow-hover)}
+  .nav button:disabled{opacity:.35;cursor:not-allowed}
+  .counter{background:var(--primary);color:#fff;font-size:12px;font-weight:700;
+    padding:9px 15px;border-radius:12px;letter-spacing:.05em;
+    box-shadow:var(--shadow);font-variant-numeric:tabular-nums}
+  .brand{position:fixed;left:clamp(14px,2vw,28px);bottom:clamp(12px,2vh,22px);
+    font-size:11px;color:#94A3B8;letter-spacing:.09em;text-transform:uppercase;font-weight:700;z-index:60}
+  .brand a{color:inherit;text-decoration:none}
+  .brand a:hover{color:var(--primary)}
+  .divider{height:1px;background:var(--line);margin:6px 0}
+
+  @media print{
+    @page{size:16in 9in;margin:0}
+    body{background:#fff;overflow:visible}
+    .deck{height:auto;width:auto}
+    .slide{position:relative;display:flex !important;page-break-after:always;height:100vh;width:100vw;inset:auto;animation:none !important}
+    .slide:last-child{page-break-after:auto}
+    .progress,.nav,.brand{display:none !important}
+  }
+  @media (max-width:900px){.grid2,.grid3,.grid4,.split,.split-rev{grid-template-columns:1fr}.slide{padding-bottom:90px}}
+</style>
+</head>
+<body>
+
+<div class="progress" id="progress"></div>
+<div class="deck" id="deck">
+
+  <!-- ============================================================ -->
+  <!-- SLIDE 1 · PORTADA -->
+  <!-- ============================================================ -->
+  <section class="slide title active">
+    <span class="title-tag">Tarea 3 · Aplicación técnica multivariada ACM</span>
+    <h1>Análisis de Correspondencia Múltiple: <span>hábitos de vida</span> y niveles de obesidad</h1>
+    <p class="title-sub">2,111 individuos, 6 variables activas (15 modalidades) y el nivel de obesidad proyectado como variable suplementaria.</p>
+    <div class="title-authors">
+      Koraima Torres Díaz · Juan Sebastián Hoyos Espinosa · Alexandra Libreros Castillo · Christian Felipe Trujillo Franco
+    </div>
+    <div class="title-meta">
+      <div>Profesora: <b>Claudia Lorena Montes</b></div>
+      <div><b>Noviembre de 2026</b></div>
+      <div>Estimation of obesity levels · <b>UCI</b></div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- SLIDE 2 · PUNTO 1 · DATOS Y DECISIONES -->
+  <!-- ============================================================ -->
+  <section class="slide">
+    <span class="eyebrow">Punto 1 · Datos y decisiones metodológicas</span>
+    <h2>Un dataset con una advertencia importante</h2>
+    <p class="subhead">Estimation of obesity levels based on eating habits and physical condition · UCI (Palechor y De la Hoz Manotas, 2019).</p>
+    <div class="rule"></div>
+
+    <div class="grid4" style="margin-bottom:clamp(10px,1.6vh,18px)">
+      <div class="kpi"><div class="v">2,111</div><div class="l">Registros · 17 variables · 0 faltantes</div></div>
+      <div class="kpi"><div class="v">6</div><div class="l">Variables activas · 15 modalidades</div></div>
+      <div class="kpi"><div class="v accent">75.6 %</div><div class="l">Filas aparentemente sintéticas*</div></div>
+      <div class="kpi"><div class="v">24</div><div class="l">Filas duplicadas exactas</div></div>
+    </div>
+
+    <div class="split" style="margin-bottom:clamp(10px,1.6vh,16px)">
+      <div class="table-wrap">
+        <table>
+          <caption>Tabla 1 · Variables del análisis y frecuencia de modalidades</caption>
+          <thead><tr><th class="rh">Variable</th><th>Rol</th><th>Modalidades · frecuencia (%)</th></tr></thead>
+          <tbody>
+            <tr><td class="rh">Sexo</td><td>Activa</td><td style="text-align:left">Mujer 1,043 (49.4 %); Hombre 1,068 (50.6 %)</td></tr>
+            <tr><td class="rh">Antec. familiares</td><td>Activa</td><td style="text-align:left">No 385 (18.2 %); Sí 1,726 (81.8 %)</td></tr>
+            <tr><td class="rh">Alim. calóricos</td><td>Activa</td><td style="text-align:left">No 245 (11.6 %); Sí 1,866 (88.4 %)</td></tr>
+            <tr><td class="rh">Comer entre comidas</td><td>Activa</td><td style="text-align:left">No 51 (2.4 %); A veces 1,765 (83.6 %); Frecuente 242 (11.5 %); Siempre 53 (2.5 %)</td></tr>
+            <tr><td class="rh">Tabaquismo</td><td>Activa</td><td style="text-align:left">No 2,067 (97.9 %); Sí 44 (2.1 %)</td></tr>
+            <tr><td class="rh">Transporte</td><td>Activa</td><td style="text-align:left">Automóvil 457 (21.6 %); Público 1,580 (74.8 %); Caminar/Bici/Moto 74 (3.5 %)</td></tr>
+            <tr class="highlight"><td class="rh">Nivel de obesidad</td><td><b>Suplem.</b></td><td style="text-align:left">Peso insuf. 272 (12.9 %); Normal 287 (13.6 %); Sobrepeso I 290 (13.7 %); Sobrepeso II 290 (13.7 %); Obesidad I 351 (16.6 %); Obesidad II 297 (14.1 %); Obesidad III 324 (15.3 %)</td></tr>
+          </tbody>
+        </table>
+        <p class="tnote">* Filas con valores no enteros en la edad o en las variables ordinales (FCVC, NCP, CH2O, FAF, TUE); coherente con la generación por SMOTE documentada en el dataset.</p>
+      </div>
+
+      <div class="stack">
+        <div class="table-wrap">
+          <table>
+            <caption>Tabla 2 · Nivel de obesidad según sexo</caption>
+            <thead><tr><th class="rh">Sexo</th><th>Insuf.</th><th>Normal</th><th>Sobre. I</th><th>Sobre. II</th><th>Obes. I</th><th>Obes. II</th><th>Obes. III</th></tr></thead>
+            <tbody>
+              <tr><td class="rh">Mujeres</td><td>173</td><td>141</td><td>145</td><td>103</td><td>156</td><td>2</td><td>323</td></tr>
+              <tr><td class="rh">Hombres</td><td>99</td><td>146</td><td>145</td><td>187</td><td>195</td><td>295</td><td>1</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="bullets">
+          <div class="bullet">
+            <div class="bullet-dot">1</div>
+            <p><b>Nivel de obesidad = variable suplementaria.</b> Si fuera activa construiría los ejes y colorear por obesidad sería <span class="hl">circular</span>.</p>
+          </div>
+          <div class="bullet">
+            <div class="bullet-dot">2</div>
+            <p><b>Transporte agrupado:</b> Caminar (56), Bici (7) y Moto (11) → <span class="hl-blue">Caminar/Bici/Moto</span> (74 casos, 3.5 %) para evitar coordenadas extremas.</p>
+          </div>
+          <div class="bullet">
+            <div class="bullet-dot accent">3</div>
+            <p><b>Composición por sexo condicionada:</b> 323 de 324 casos de obesidad III son mujeres; 295 de 297 de obesidad II son hombres.</p>
+          </div>
+          <div class="bullet">
+            <div class="bullet-dot accent">4</div>
+            <p><b>Origen:</b> encuesta en Colombia, Perú y México. La distribución casi uniforme por nivel <span class="hl">no representa la prevalencia real</span>.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- SLIDE 3 · PUNTO 2 · PARÁMETROS n, s, p -->
+  <!-- ============================================================ -->
+  <section class="slide">
+    <span class="eyebrow">Punto 2 · Parámetros del ACM</span>
+    <h2>La estructura matemática del análisis</h2>
+    <p class="subhead">La matriz disyuntiva completa, la inercia total y el número máximo de componentes.</p>
+    <div class="rule"></div>
+
+    <div class="grid4" style="margin-bottom:clamp(12px,2vh,22px)">
+      <div class="kpi"><div class="v">2,111</div><div class="l">Observaciones · n</div></div>
+      <div class="kpi"><div class="v">6</div><div class="l">Variables activas · s</div></div>
+      <div class="kpi"><div class="v">15</div><div class="l">Modalidades activas · p</div></div>
+      <div class="kpi"><div class="v accent">9</div><div class="l">Componentes posibles · p − s</div></div>
+    </div>
+
+    <div class="split">
+      <div class="table-wrap">
+        <table>
+          <caption>Tabla 3 · Parámetros del ACM</caption>
+          <thead><tr><th class="rh">Parámetro</th><th>Valor</th></tr></thead>
+          <tbody>
+            <tr><td class="rh">Observaciones (n)</td><td>2,111</td></tr>
+            <tr><td class="rh">Variables activas (s)</td><td>6</td></tr>
+            <tr><td class="rh">Modalidades activas (p)</td><td>15</td></tr>
+            <tr><td class="rh">Componentes posibles (p − s)</td><td>9</td></tr>
+            <tr><td class="rh">Inercia total (p − s)/s</td><td>1.5</td></tr>
+            <tr><td class="rh">Valor propio medio (1/s)</td><td>0.1667</td></tr>
+            <tr><td class="rh">Matriz disyuntiva (n × p)</td><td>2,111 × 15</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="stack">
+        <div class="card accent">
+          <h3>Verificación en R</h3>
+          <p>Cada fila de la matriz disyuntiva suma <b>s = 6</b>: un individuo elige <b>una única modalidad por variable</b>. <b>p − s = 9</b> es menor que <b>n − 1 = 2,110</b>.</p>
+        </div>
+        <div class="card">
+          <h3>Comparación con nivel de obesidad activo</h3>
+          <p>Si el nivel de obesidad fuera activo: <b>p = 22</b>, <b>s = 7</b> y <b>15 componentes</b>. Pero construiría los ejes con la información que se quiere explicar.</p>
+        </div>
+        <div class="card warn">
+          <h3>Inercia total</h3>
+          <p><b>(p − s)/s = 1.5</b>, coincide con la suma de los 9 valores propios. Valor propio medio <b>1/s = 0.1667</b>.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- SLIDE 4 · PUNTO 3 · VARIANZA + FIGURA 2 -->
+  <!-- ============================================================ -->
+  <section class="slide">
+    <span class="eyebrow">Punto 3 · Varianza explicada</span>
+    <h2>Porcentajes brutos bajos, estructura alta</h2>
+    <p class="subhead">En ACM la inercia total incluye la dispersión intra-variable, por eso los porcentajes brutos subestiman la estructura recuperada. Benzécri corrige ese efecto.</p>
+    <div class="rule"></div>
+
+    <div class="grid4" style="margin-bottom:clamp(12px,2vh,20px)">
+      <div class="kpi"><div class="v">18.2 %</div><div class="l">Inercia bruta · Dim 1</div></div>
+      <div class="kpi"><div class="v">13.7 %</div><div class="l">Inercia bruta · Dim 2</div></div>
+      <div class="kpi"><div class="v accent">31.9 %</div><div class="l">Plano 1-2 · bruta</div></div>
+      <div class="kpi"><div class="v success">98.5 %</div><div class="l">Plano 1-2 · Benzécri</div></div>
+    </div>
+
+    <div class="split">
+      <div class="figure">
+        <div class="figure-label">Figura 2</div>
+        <div class="fig-img">
+          <img src="salidas/Figura_2.png" alt="Figura 2 — Valores propios del ACM"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+          <div class="fallback">
+            <strong>Figura 2 · Valores propios del ACM</strong>
+            Reemplazar con <code>salidas/Figura_2.png</code><br>
+            (generada por el Rmd)
+          </div>
+        </div>
+        <p class="figure-caption">Figura 2. Valores propios del ACM (línea roja: valor propio medio 1/s = 0.167).</p>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <caption>Tabla 4 · Valores propios e inercia</caption>
+          <thead>
+            <tr><th class="rh">Eje</th><th>λ</th><th>% bruta</th><th>% acum.</th><th>% Benzécri</th><th>% B. acum.</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="rh">Dim 1</td><td>0.273</td><td><b>18.21</b></td><td>18.21</td><td><b>87.34</b></td><td>87.34</td></tr>
+            <tr><td class="rh">Dim 2</td><td>0.205</td><td><b>13.65</b></td><td>31.87</td><td><b>11.17</b></td><td>98.50</td></tr>
+            <tr><td class="rh">Dim 3</td><td>0.181</td><td>12.04</td><td>43.91</td><td>1.50</td><td>100.00</td></tr>
+            <tr><td class="rh">Dim 4</td><td>0.165</td><td>10.99</td><td>54.90</td><td>0.00</td><td>100.00</td></tr>
+            <tr><td class="rh">Dim 5</td><td>0.160</td><td>10.69</td><td>65.58</td><td>0.00</td><td>100.00</td></tr>
+            <tr><td class="rh">Dim 6</td><td>0.152</td><td>10.15</td><td>75.73</td><td>0.00</td><td>100.00</td></tr>
+            <tr><td class="rh">Dim 7</td><td>0.135</td><td>8.99</td><td>84.73</td><td>0.00</td><td>100.00</td></tr>
+            <tr><td class="rh">Dim 8</td><td>0.123</td><td>8.19</td><td>92.92</td><td>0.00</td><td>100.00</td></tr>
+            <tr><td class="rh">Dim 9</td><td>0.106</td><td>7.08</td><td>100.00</td><td>0.00</td><td>100.00</td></tr>
+          </tbody>
+        </table>
+        <p class="tnote">Benzécri: tasas modificadas, calculadas solo con los ejes cuyo valor propio supera 1/s.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- SLIDE 5 · PUNTO 4 · SELECCIÓN DE COMPONENTES -->
+  <!-- ============================================================ -->
+  <section class="slide">
+    <span class="eyebrow">Punto 4 · Selección de componentes</span>
+    <h2>Dos ejes: criterio, no capricho</h2>
+    <p class="subhead">Se evaluaron tres criterios complementarios para retener el plano 1-2.</p>
+    <div class="rule"></div>
+
+    <div class="grid3" style="margin-bottom:clamp(12px,2vh,20px)">
+      <div class="card accent">
+        <h3>Criterio 1 · Valor propio medio</h3>
+        <p>Tres ejes superan <b>1/s = 0.167</b> (0.273, 0.205, 0.181). El cuarto (0.165) queda apenas por debajo.</p>
+      </div>
+      <div class="card accent">
+        <h3>Criterio 2 · Benzécri</h3>
+        <p>El eje 1 concentra el <b>87.3 %</b>. Después del eje 2, la inercia restante es mínima: <b>1.5 %</b> en el eje 3.</p>
+      </div>
+      <div class="card accent">
+        <h3>Criterio 3 · Sedimentación e interpretabilidad</h3>
+        <p>Caída marcada tras el eje 1, descenso gradual sin codo desde el 3. Los ejes 1 y 2 se asocian con <b>variables distintas</b> y son interpretables.</p>
+      </div>
+    </div>
+
+    <div class="split">
+      <div class="bullets">
+        <div class="bullet">
+          <div class="bullet-dot success">1</div>
+          <p><b>Retenemos 2 ejes:</b> acumulan el <span class="hl-blue">98.5 %</span> por Benzécri y permiten la representación gráfica de los puntos 5 a 7.</p>
+        </div>
+        <div class="bullet">
+          <div class="bullet-dot accent">2</div>
+          <p><b>Limitación:</b> el eje 3 supera ligeramente el valor propio medio y el <b>68.1 %</b> de la inercia bruta queda fuera del plano.</p>
+        </div>
+        <div class="bullet">
+          <div class="bullet-dot accent">3</div>
+          <p><b>Consecuencia:</b> ninguna modalidad alcanza un <b>cos² = 0.5</b> en el plano. Las lecturas del plano son aproximaciones.</p>
+        </div>
+      </div>
+
+      <div class="card warn">
+        <div class="divider" style="margin-top:0"></div>
+        <p>Los porcentajes brutos bajos (18.2 % y 13.7 %) son <b>por construcción del ACM</b>: la inercia total incluye la dispersión entre modalidades de una misma variable, que no informa sobre relaciones entre variables.</p>
+        <div class="divider"></div>
+        <p>Las tasas de Benzécri tienden a ser <b>optimistas</b>, por eso se reportan <b>junto con las brutas</b>.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- SLIDE 6 · PUNTO 5.1 · NUBE DE VARIABLES (Tabla 5 + Figura 3) -->
+  <!-- ============================================================ -->
+  <section class="slide">
+    <span class="eyebrow">Punto 5.1 · Nube de variables</span>
+    <h2>Qué variables construyen cada eje</h2>
+    <p class="subhead">Razón de correlación η² entre cada variable y cada eje (0 a 1).</p>
+    <div class="rule"></div>
+
+    <div class="split">
+      <div class="figure">
+        <div class="figure-label">Figura 3</div>
+        <div class="fig-img">
+          <img src="salidas/Figura_3.png" alt="Figura 3 — Nube de variables (η²)"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+          <div class="fallback">
+            <strong>Figura 3 · Nube de variables</strong>
+            Reemplazar con <code>salidas/Figura_3.png</code>
+          </div>
+        </div>
+        <p class="figure-caption">Figura 3. Nube de variables (razón de correlación η²).</p>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <caption>Tabla 5 · η² de las variables con los ejes</caption>
+          <thead><tr><th class="rh">Variable</th><th>η² Dim 1</th><th>η² Dim 2</th></tr></thead>
+          <tbody>
+            <tr><td class="rh">Sexo</td><td>0.084</td><td class="highlight">0.356</td></tr>
+            <tr><td class="rh">Antec. familiares</td><td class="highlight">0.493</td><td>0.003</td></tr>
+            <tr><td class="rh">Alim. calóricos</td><td class="highlight">0.357</td><td>0.059</td></tr>
+            <tr><td class="rh">Comer entre comidas</td><td class="highlight">0.485</td><td>0.200</td></tr>
+            <tr><td class="rh">Tabaquismo</td><td>0.005</td><td>0.098</td></tr>
+            <tr><td class="rh">Transporte</td><td>0.216</td><td class="highlight">0.512</td></tr>
+            <tr><td class="rh">Nivel de obesidad (suplem.)</td><td class="highlight">0.358</td><td>0.219</td></tr>
+          </tbody>
+        </table>
+        <p class="tnote">Celda sombreada: η² ≥ 0.35.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- SLIDE 7 · PUNTO 5.2 · NUBE DE MODALIDADES (Figura 4 + lectura) -->
+  <!-- ============================================================ -->
+  <section class="slide">
+    <span class="eyebrow">Punto 5.2 · Nube de modalidades</span>
+    <h2>El mapa del ACM: qué va con qué</h2>
+    <p class="subhead">Los signos de los ejes son arbitrarios: se fijó la convención "Antec. fam.: No" positiva en Dim 1 y "Hombre" positiva en Dim 2.</p>
+    <div class="rule"></div>
+
+    <div class="split">
+      <div class="figure">
+        <div class="figure-label">Figura 4</div>
+        <div class="fig-img">
+          <img src="salidas/Figura_4.png" alt="Figura 4 — Nube de modalidades en el plano 1-2"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+          <div class="fallback">
+            <strong>Figura 4 · Nube de modalidades</strong>
+            Reemplazar con <code>salidas/Figura_4.png</code>
+          </div>
+        </div>
+        <p class="figure-caption">Figura 4. Nube de modalidades en el plano 1-2 (color: contribución a los ejes 1-2). Posiciones relativas según Dim 1: 18.2 %; Dim 2: 13.7 %. Signos según convención del informe.</p>
+      </div>
+
+      <div class="stack">
+        <div class="card accent">
+          <h3>Eje 1 · 18.2 %</h3>
+          <p><b>Derecha:</b> Antec. fam.: No (+1.49), Calóricos: No (+1.65), Comer: Frecuente (+1.68), Comer: No (+1.52), Caminar/Bici/Moto (+1.80) → <b>peso normal / insuficiente</b>.</p>
+          <p style="margin-top:6px"><b>Izquierda:</b> Antec. fam.: Sí (−0.33), Calóricos: Sí (−0.22), Comer: A veces (−0.31), Automóvil (−0.66) → <b>obesidad I y II, sobrepeso II</b>.</p>
+        </div>
+        <div class="card success">
+          <h3>Eje 2 · 13.7 %</h3>
+          <p><b>Positivo:</b> Caminar/Bici/Moto (+2.91), Comer: Siempre (+2.62), Fuma: Sí (+2.15), Automóvil (+0.75), Hombre (+0.59).</p>
+          <p style="margin-top:6px"><b>Negativo:</b> Mujer (−0.60), Transp. público (−0.35), Comer: Frecuente (−0.48), <b>Obesidad III (−0.87)</b>.</p>
+        </div>
+        <div class="card warn">
+          <h3>Resultado a advertir</h3>
+          <p>Comer: Frecuente queda del lado del <b>peso normal</b>: es asociación en esta muestra, <b>no evidencia de un efecto</b>. Puede reflejar la generación sintética.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- SLIDE 8 · PUNTO 6 · INDIVIDUOS (Tabla 6 + Figura 5 + lectura completa) -->
+  <!-- ============================================================ -->
+  <section class="slide">
+    <span class="eyebrow">Punto 6 · Resultados de los individuos</span>
+    <h2>Baricentros por nivel de obesidad</h2>
+    <p class="subhead">Los 2,111 individuos se reducen a <b>95 perfiles distintos</b>: con 6 variables categóricas, muchos comparten exactamente las mismas respuestas. La nube tiene 95 puntos con multiplicidad, no 2,111 puntos independientes.</p>
+    <div class="rule"></div>
+
+    <div class="split-rev">
+      <div class="table-wrap">
+        <table>
+          <caption>Tabla 6 · Niveles de obesidad como modalidades suplementarias</caption>
+          <thead>
+            <tr><th class="rh">Nivel de obesidad</th><th>Coord. Dim 1</th><th>Coord. Dim 2</th><th>valor test D1</th><th>valor test D2</th></tr>
+          </thead>
+          <tbody>
+            <tr class="highlight"><td class="rh">Peso insuficiente</td><td>0.898</td><td>−0.404</td><td>15.86</td><td>−7.13</td></tr>
+            <tr class="highlight"><td class="rh">Peso normal</td><td>0.943</td><td>0.502</td><td>17.18</td><td>9.15</td></tr>
+            <tr><td class="rh">Sobrepeso I</td><td>0.082</td><td>−0.004</td><td>1.51</td><td>−0.07</td></tr>
+            <tr class="highlight"><td class="rh">Sobrepeso II</td><td>−0.194</td><td>0.281</td><td>−3.56</td><td>5.16</td></tr>
+            <tr class="highlight"><td class="rh">Obesidad I</td><td>−0.510</td><td>0.053</td><td>−10.47</td><td>1.08</td></tr>
+            <tr class="highlight"><td class="rh">Obesidad II</td><td>−0.718</td><td>0.504</td><td>−13.35</td><td>9.36</td></tr>
+            <tr class="highlight"><td class="rh">Obesidad III</td><td>−0.278</td><td>−0.874</td><td>−5.43</td><td>−17.09</td></tr>
+          </tbody>
+        </table>
+        <p class="tnote">valor test: |valor test| &gt; 1.96 indica que la modalidad se aleja significativamente del origen (sombreado).</p>
+      </div>
+
+      <div class="figure">
+        <div class="figure-label">Figura 5</div>
+        <div class="fig-img">
+          <img src="salidas/Figura_5.png" alt="Figura 5 — Baricentros de los individuos por nivel de obesidad"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+          <div class="fallback">
+            <strong>Figura 5 · Baricentros</strong>
+            Reemplazar con <code>salidas/Figura_5.png</code>
+          </div>
+        </div>
+        <p class="figure-caption">Figura 5. Coordenadas medias (baricentros) de los individuos de cada nivel de obesidad.</p>
+      </div>
+    </div>
+
+    <div class="card warn" style="margin-top:clamp(10px,1.6vh,16px)">
+      <h3>Lectura de los baricentros</h3>
+      <p><b>Eje 1 (gradiente):</b> peso insuficiente y normal en el lado positivo (+0.47 y +0.49); sobrepeso I cerca del origen (+0.04); sobrepeso II y obesidad I y II en el negativo (−0.10, −0.27 y −0.38). <b>Eje 2:</b> obesidad III se separa (−0.40), mientras normal y obesidad II quedan en el positivo (+0.23). Todos los niveles salvo sobrepeso I se alejan significativamente del origen en al menos un eje (|valor test| &gt; 1.96).</p>
+      <div class="divider"></div>
+      <p>Esas diferencias son de <b>posición media</b>: las coordenadas de los baricentros (entre 0.0 y 0.5) son pequeñas frente a la dispersión de los individuos (hasta ~3 unidades en el eje 2 por perfiles con modalidades raras), y los individuos de distintos niveles se mezclan cerca del origen. Los hábitos y el sexo analizados <b>orientan el nivel de obesidad, pero no lo separan en grupos definidos</b>.</p>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- SLIDE 9 · PUNTO 7 · CONTRIBUCIONES MODALIDADES E INDIVIDUOS -->
+  <!-- ============================================================ -->
+  <section class="slide">
+    <span class="eyebrow">Punto 7 · Contribuciones y cos²</span>
+    <h2>Contribución ≠ calidad de representación</h2>
+    <p class="subhead">La contribución mide qué construye el eje; el cos² mide qué tan bien está representado el punto. Aplica a modalidades e individuos.</p>
+    <div class="rule"></div>
+
+    <div class="grid4" style="margin-bottom:clamp(10px,1.6vh,18px)">
+      <div class="kpi"><div class="v accent">24.6 %</div><div class="l">Antec. fam.: No · contribución Dim 1</div></div>
+      <div class="kpi"><div class="v accent">19.6 %</div><div class="l">Comer: Frecuente · Dim 1</div></div>
+      <div class="kpi"><div class="v accent">24.1 %</div><div class="l">Caminar/Bici/Moto · Dim 2</div></div>
+      <div class="kpi"><div class="v success">0.495</div><div class="l">Antec. familiares · cos² plano (máx.)</div></div>
+    </div>
+
+    <div class="split">
+      <div class="figure">
+        <div class="figure-label">Figura 6</div>
+        <div class="fig-img">
+          <img src="salidas/Figura_6.png" alt="Figura 6 — Contribución de las modalidades a los ejes 1 y 2"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+          <div class="fallback">
+            <strong>Figura 6 · Contribuciones por eje</strong>
+            Reemplazar con <code>salidas/Figura_6.png</code>
+          </div>
+        </div>
+        <p class="figure-caption">Figura 6. Contribución de las modalidades a los ejes 1 y 2 (línea roja: contribución media 100/15 = 6.67 %).</p>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <caption>Tabla 7 · Modalidades con mayor contribución</caption>
+          <thead>
+            <tr><th class="rh">Modalidad</th><th>C. D1</th><th>C. D2</th><th>cos² plano</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="rh">Caminar/Bici/Moto</td><td>6.89</td><td class="highlight">24.08</td><td>0.424</td></tr>
+            <tr><td class="rh">Antec. fam.: No</td><td class="highlight">24.58</td><td>0.18</td><td class="highlight">0.495</td></tr>
+            <tr><td class="rh">Calóricos: No</td><td class="highlight">19.24</td><td>4.27</td><td>0.416</td></tr>
+            <tr><td class="rh">Comer: Frecuente</td><td class="highlight">19.62</td><td>2.11</td><td>0.393</td></tr>
+            <tr><td class="rh">Mujer</td><td>2.59</td><td class="highlight">14.68</td><td>0.441</td></tr>
+            <tr><td class="rh">Hombre</td><td>2.53</td><td class="highlight">14.34</td><td>0.441</td></tr>
+            <tr><td class="rh">Comer: Siempre</td><td>1.82</td><td class="highlight">14.03</td><td class="dim">0.207</td></tr>
+            <tr><td class="rh">Automóvil</td><td>5.74</td><td>9.95</td><td class="dim">0.276</td></tr>
+          </tbody>
+        </table>
+        <p class="tnote">Sombreado: contribución ≥ 10 % al eje. Ninguna modalidad supera cos² = 0.5 en el plano.</p>
+      </div>
+    </div>
+
+    <div class="grid2" style="margin-top:clamp(10px,1.6vh,16px)">
+      <div class="card accent">
+        <h3>Contribución ≠ cos²</h3>
+        <p><b>Comer: Siempre</b> contribuye 14.0 % al eje 2, pero su cos² del plano es solo <b>0.207</b>: construye el eje, pero su posición se explica en parte por otros ejes. A la inversa, <b>Comer: A veces</b> contribuye poco al eje 1 (4.8 %) pero está bien representada (0.480).</p>
+      </div>
+      <div class="card success">
+        <h3>Individuos · Sección 7.2</h3>
+        <ul>
+          <li><b>Individuo 278:</b> mayor contribución al eje 2 (<b>2.041 %</b>). Los demás aportan menos del 1 %.</li>
+          <li><b>cos² en el plano (individuos):</b> mediana <b>0.358</b>; el <b>40 %</b> supera cos² = 0.5.</li>
+          <li>La inercia se reparte entre los <b>95 perfiles</b>: ningún individuo domina la construcción de los ejes.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- SLIDE 10 · PUNTO 8 · VALIDACIÓN CON missMDA -->
+  <!-- ============================================================ -->
+  <section class="slide">
+    <span class="eyebrow">Punto 8 · Validación con missMDA</span>
+    <h2>¿Se sostiene la estructura si faltan datos?</h2>
+    <p class="subhead">Se generó un 10 % de datos faltantes completamente al azar, <b>solo en las 6 variables activas</b>, con <code style="background:#EEF2FF;padding:1px 6px;border-radius:4px;font-family:monospace;color:#1E3A8A">set.seed(123)</code>. Se corrieron 30 repeticiones (semillas 123 a 152).</p>
+    <div class="rule"></div>
+
+    <div class="grid4" style="margin-bottom:clamp(10px,1.6vh,18px)">
+      <div class="kpi"><div class="v">ncp = 3</div><div class="l">Dimensiones de la imputación</div></div>
+      <div class="kpi"><div class="v">123 → 152</div><div class="l">Semillas de las 30 repeticiones</div></div>
+      <div class="kpi"><div class="v accent">80.6 %</div><div class="l">Acierto imputación (vs 79.6 % por la moda)</div></div>
+      <div class="kpi"><div class="v success">0.929</div><div class="l">Coeficiente RV promedio</div></div>
+    </div>
+
+    <div class="split">
+      <div class="figure">
+        <div class="figure-label">Figura 7</div>
+        <div class="fig-img">
+          <img src="salidas/Figura_7.png" alt="Figura 7 — Contribuciones completas vs imputadas, ambos ejes"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+          <div class="fallback">
+            <strong>Figura 7 · Contribuciones completas vs imputadas</strong>
+            Reemplazar con <code>salidas/Figura_7.png</code><br>
+            (ambos ejes, 15 modalidades, datos completos vs imputados)
+          </div>
+        </div>
+        <p class="figure-caption">Figura 7. Contribución de las modalidades a los ejes 1 y 2 con datos completos e imputados (semilla 123).</p>
+      </div>
+
+      <div class="stack">
+        <div class="table-wrap">
+          <table>
+            <caption>Tabla 9 · Inercia por eje (completo vs imputado)</caption>
+            <thead><tr><th class="rh">Dim</th><th>Completo %</th><th>Imputado %</th><th>Diferencia</th></tr></thead>
+            <tbody>
+              <tr><td class="rh">Dim 1</td><td>18.21</td><td>18.63</td><td><b>+0.42 pp</b></td></tr>
+              <tr><td class="rh">Dim 2</td><td>13.65</td><td>14.05</td><td><b>+0.40 pp</b></td></tr>
+            </tbody>
+          </table>
+          <p class="tnote">Diferencias en <b>puntos porcentuales</b>, no en %.</p>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <caption>Tabla 10 · Calidad de la imputación (promedio 30 rep.)</caption>
+            <thead><tr><th class="rh">Indicador</th><th>Media</th></tr></thead>
+            <tbody>
+              <tr><td class="rh">Acierto imputación (imputeMCA)</td><td><b>0.806</b></td></tr>
+              <tr><td class="rh">Acierto por la moda</td><td>0.796</td></tr>
+              <tr><td class="rh">Correlación coord. modalidades · Dim 1</td><td><b>0.996</b></td></tr>
+              <tr><td class="rh">Correlación coord. modalidades · Dim 2</td><td><b>0.990</b></td></tr>
+              <tr><td class="rh">Coeficiente RV (individuos, plano 1-2)</td><td><b>0.929</b></td></tr>
+              <tr><td class="rh">Variación inercia Dim 1 (promedio)</td><td>+0.67 pp</td></tr>
+              <tr><td class="rh">Variación inercia Dim 2 (promedio)</td><td>+0.36 pp</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid3" style="margin-top:clamp(10px,1.6vh,16px)">
+      <div class="card success">
+        <h3>Estructura conservada</h3>
+        <p>Correlación de coordenadas de modalidades <b>≥ 0.99</b>: los ejes imputados son casi idénticos a los originales.</p>
+      </div>
+      <div class="card warn">
+        <h3>Ventaja modesta</h3>
+        <p>imputeMCA supera por <b>apenas 1.0 pp</b> a asignar la modalidad más frecuente: frente a la moda, la ganancia es pequeña.</p>
+      </div>
+      <div class="card accent">
+        <h3>Interpretación estable</h3>
+        <p>El coeficiente <b>RV = 0.929</b> y el aumento de inercia (<b>+0.42 pp</b> y <b>+0.40 pp</b> en la semilla base) son compatibles con que el plano 1-2 siga siendo el mismo.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- SLIDE 11 · PUNTO 9 · CIERRE -->
+  <!-- ============================================================ -->
+  <section class="slide">
+    <span class="eyebrow">Punto 9 · Cierre</span>
+    <h2>Lo que el ACM permite decir — y lo que no</h2>
+    <p class="subhead">Dos ejes interpretables; pero los hábitos y el sexo <b>no separan</b> el nivel de obesidad en grupos definidos.</p>
+    <div class="rule"></div>
+
+    <div class="grid2" style="margin-bottom:clamp(12px,2vh,20px)">
+      <div class="card success">
+        <h3>Hallazgos</h3>
+        <ul>
+          <li><b>Eje 1:</b> antecedentes familiares, alimentación calórica y comer entre comidas describen un <b>gradiente en el eje</b>: del perfil sin antecedentes al perfil con antecedentes y consumo frecuente.</li>
+          <li><b>Eje 2:</b> sexo y medio de transporte; separa obesidad III de obesidad II.</li>
+          <li><b>Dos ejes</b> retienen el 98.5 % de la inercia corregida (Benzécri).</li>
+          <li><b>Nivel de obesidad</b> se relaciona con ambos ejes (η² = 0.358 y 0.219).</li>
+          <li><b>Estructura estable ante faltantes:</b> correlaciones de modalidades ≥ 0.99 y RV = 0.929 en 30 repeticiones.</li>
+        </ul>
+      </div>
+      <div class="card warn">
+        <h3>Limitaciones</h3>
+        <ul>
+          <li><b>75.6 %</b> de las filas parece sintético. La distribución casi uniforme por nivel no es prevalencia real.</li>
+          <li><b>Ningún cos² supera 0.5</b> en el plano: 68.1 % de la inercia bruta queda fuera del plano 1-2.</li>
+          <li><b>Asociación no es causalidad.</b> Comer: Frecuente del lado del peso normal es un resultado de esta muestra.</li>
+          <li><b>Composición por sexo</b> refleja el diseño de la base, no un patrón poblacional.</li>
+          <li><b>Ventaja modesta</b> de la imputación frente a la moda: apenas +1.0 pp.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card accent">
+      <h3>Mensaje final</h3>
+      <p>El ACM resume la asociación entre hábitos y nivel de obesidad, pero la calidad de representación es <b>moderada</b> y las lecturas del plano son aproximaciones. Los hábitos y el sexo <b>orientan</b> el nivel de obesidad, pero <b>no lo separan en grupos definidos</b>.</p>
+    </div>
+  </section>
+
+</div>
+
+<div class="brand"><a href="index.html">← Inicio</a></div>
+
+<div class="nav">
+  <button id="prev" aria-label="Diapositiva anterior">&#10094;</button>
+  <div class="counter" id="counter">1 / 11</div>
+  <button id="next" aria-label="Diapositiva siguiente">&#10095;</button>
+</div>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const counter = document.getElementById('counter');
+  const progress = document.getElementById('progress');
+  const prevBtn = document.getElementById('prev');
+  const nextBtn = document.getElementById('next');
+  let index = 0;
+  function render(){
+    slides.forEach((s,i)=> s.classList.toggle('active', i === index));
+    counter.textContent = (index+1) + ' / ' + slides.length;
+    progress.style.width = ((index+1)/slides.length*100) + '%';
+    prevBtn.disabled = index === 0;
+    nextBtn.disabled = index === slides.length-1;
+    if(slides[index]) slides[index].scrollTop = 0;
+  }
+  function go(n){ if(n < 0 || n >= slides.length) return; index = n; render(); }
+  nextBtn.addEventListener('click', ()=> go(index+1));
+  prevBtn.addEventListener('click', ()=> go(index-1));
+  document.addEventListener('keydown', (e)=>{
+    if(['ArrowRight','ArrowDown','PageDown',' '].includes(e.key)){ e.preventDefault(); go(index+1); }
+    else if(['ArrowLeft','ArrowUp','PageUp'].includes(e.key)){ e.preventDefault(); go(index-1); }
+    else if(e.key === 'Home'){ e.preventDefault(); go(0); }
+    else if(e.key === 'End'){ e.preventDefault(); go(slides.length-1); }
+  });
+  let x0 = null;
+  document.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; }, {passive:true});
+  document.addEventListener('touchend', e => {
+    if(x0 === null) return;
+    const dx = e.changedTouches[0].clientX - x0;
+    if(Math.abs(dx) > 55){ dx < 0 ? go(index+1) : go(index-1); }
+    x0 = null;
+  }, {passive:true});
+  render();
+</script>
+</body>
+</html>
