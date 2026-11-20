@@ -1,0 +1,9 @@
+"Indicador","Media","Desv_est"
+"Acierto de la imputación en las celdas con NA",0.806,0.011
+"Acierto de la imputación por la moda (referencia)",0.796,0.012
+"% de inercia, Dim 1",18.875,0.161
+"% de inercia, Dim 2",14.011,0.245
+"% de inercia, Dim 3",12.023,0.157
+"RV entre coordenadas de individuos (plano 1-2)",0.929,0.007
+"Correlación de coordenadas de modalidades, Dim 1",0.996,0.003
+"Correlación de coordenadas de modalidades, Dim 2",0.99,0.006

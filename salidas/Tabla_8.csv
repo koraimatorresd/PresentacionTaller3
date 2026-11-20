@@ -1,0 +1,7 @@
+"Eje","Individuo","Contr_pct","cos2_eje","Gender","family_history_with_overweight","FAVC","CAEC","SMOKE","MTRANS"
+1,84,0.798,0.341,"Female","no","no","no","no","Walk_Bike_Moto"
+1,42,0.702,0.502,"Male","no","no","Frequently","no","Walk_Bike_Moto"
+1,94,0.7,0.305,"Female","no","no","Always","no","Walk_Bike_Moto"
+2,278,2.041,0.445,"Male","no","yes","Always","yes","Walk_Bike_Moto"
+2,139,1.437,0.496,"Male","yes","no","Always","no","Walk_Bike_Moto"
+2,465,1.38,0.451,"Male","no","no","Always","no","Walk_Bike_Moto"

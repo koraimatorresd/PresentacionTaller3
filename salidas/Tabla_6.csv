@@ -1,0 +1,8 @@
+"Nivel","Coord_Dim1","Coord_Dim2","vtest_Dim1","vtest_Dim2"
+"Insufficient_Weight",0.898,-0.404,15.86,-7.13
+"Normal_Weight",0.943,0.502,17.18,9.15
+"Overweight_Level_I",0.082,-0.004,1.51,-0.07
+"Overweight_Level_II",-0.194,0.281,-3.56,5.16
+"Obesity_Type_I",-0.51,0.053,-10.47,1.08
+"Obesity_Type_II",-0.718,0.504,-13.35,9.36
+"Obesity_Type_III",-0.278,-0.874,-5.43,-17.09
